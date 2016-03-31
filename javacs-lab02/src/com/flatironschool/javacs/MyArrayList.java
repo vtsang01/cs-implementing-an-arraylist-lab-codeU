@@ -39,9 +39,9 @@ public class MyArrayList<E> implements List<E> {
 		mal.add(2);
 		mal.add(3);
 		System.out.println(Arrays.toString(mal.toArray()) + " size = " + mal.size);
-		
 		mal.remove(new Integer(2));
 		System.out.println(Arrays.toString(mal.toArray()) + " size = " + mal.size);
+
 	}
 
 	@Override
@@ -62,7 +62,21 @@ public class MyArrayList<E> implements List<E> {
 		if (index < 0 || index > size) {
 			throw new IndexOutOfBoundsException();
 		}
-		// TODO: fill in the rest of this method
+
+		if (size >= array.length) {
+			// make a bigger array and copy over the elements
+			E[] bigger = (E[]) new Object[array.length * 2];
+			System.arraycopy(array, 0, bigger, 0, array.length);
+			array = bigger;
+		} 
+
+		int current = size; 
+		while (current != index && current > 0){
+			array[current] = array[current - 1];
+			current--;  
+		}
+		array[current] = element; 
+		size++; 
 	}
 
 	@Override
@@ -111,8 +125,12 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: fill in this method
-		return 0;
+		for(int i = 0; i < size; i++){
+			if (equals(target, array[i])){
+				return i; 
+			}
+		}
+		return -1;
 	}
 
 	/** Checks whether an element of the array is the target.
@@ -172,20 +190,25 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public boolean remove(Object obj) {
+
 		int index = indexOf(obj);
 		if (index == -1) {
 			return false;
 		}
+
 		remove(index);
 		return true;
 	}
 
 	@Override
 	public E remove(int index) {
-		// TODO: fill in this method.
-		return null;
+		E temp = get(index); 
+		for(int i = index; i < size - 1; i++){
+			array[i] = array[i + 1]; 
+		}
+		size--;
+		return temp;
 	}
-
 	@Override
 	public boolean removeAll(Collection<?> collection) {
 		boolean flag = true;
@@ -202,8 +225,13 @@ public class MyArrayList<E> implements List<E> {
 
 	@Override
 	public E set(int index, E element) {
-		// TODO: fill in this method.
-		return null;
+		//TODO
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		E temp = array[index]; 
+		array[index] = element; 
+		return temp;
 	}
 
 	@Override
